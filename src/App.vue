@@ -5,8 +5,10 @@
       <ProductList @edit-product="setEditProductData" />
     </main>
     <footer class="app-footer">
-      <p>Made with <span class="heart">&hearts;</span> using Vue.js and Local Storage</p>
-    </footer>
+  <p>© 2024 Zyad | Built with ❤️ using Vue.js</p>
+</footer>
+
+
   </div>
 </template>
 
@@ -39,20 +41,11 @@ export default {
 };
 </script>
 
-
 <style scoped>
 @import 'https://cdn.jsdelivr.net/npm/tailwindcss@^2/dist/tailwind.min.css';
 
 .inventory-app {
-  @apply flex flex-col min-h-screen bg-gray-100 font-sans text-gray-800;
-}
-
-.app-header {
-  @apply bg-green-600 p-5 text-center text-white shadow-lg;
-}
-
-.app-title {
-  @apply text-3xl m-0;
+  @apply flex flex-col min-h-screen bg-gray-900 font-sans text-gray-800;
 }
 
 .app-main {
@@ -60,10 +53,10 @@ export default {
 }
 
 .app-footer {
-  @apply bg-green-600 text-white text-center p-3;
+  @apply text-white text-center p-3;
 }
 
 .heart {
-  @apply text-red-500;
+  @apply text-pink-500;
 }
 </style>

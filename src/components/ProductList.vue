@@ -1,36 +1,38 @@
 <template>
   <div class="product-list-container mt-5">
     <h2 class="list-title">Product List</h2>
-    <table v-if="allProducts && allProducts.length" class="product-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Price</th>
-          <th>Taxes</th>
-          <th>Ads</th>
-          <th>Discount</th>
-          <th>Total</th>
-          <th>Category</th>
-          <th>Update</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(product, index) in allProducts" :key="product.id" class="product-row">
-          <td>{{ index + 1 }}</td>
-          <td>{{ product.name || 'N/A' }}</td>
-          <td>${{ product.price || 0 }}</td>
-          <td>{{ product.taxes || 0 }}</td>
-          <td>{{ product.ads || 0 }}</td>
-          <td>{{ product.discount || 0 }}</td>
-          <td>{{ product.total || 0 }}</td>
-          <td>{{ product.category || 'N/A' }}</td>
-          <td><button @click="editProduct(index)" class="update-button">Update</button></td>
-          <td><button @click="confirmDeleteProduct(index)" class="delete-button">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-if="allProducts && allProducts.length" class="table-wrapper">
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Taxes</th>
+            <th>Ads</th>
+            <th>Discount</th>
+            <th>Total</th>
+            <th>Category</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(product, index) in allProducts" :key="product.id" class="product-row">
+            <td>{{ index + 1 }}</td>
+            <td>{{ product.name || 'N/A' }}</td>
+            <td>${{ product.price || 0 }}</td>
+            <td>{{ product.taxes || 0 }}</td>
+            <td>{{ product.ads || 0 }}</td>
+            <td>{{ product.discount || 0 }}</td>
+            <td>{{ product.total || 0 }}</td>
+            <td>{{ product.category || 'N/A' }}</td>
+            <td><button @click="editProduct(index)" class="update-button">Update</button></td>
+            <td><button @click="confirmDeleteProduct(index)" class="delete-button">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <p v-else class="no-products">No products available. Start adding new products!</p>
   </div>
 </template>
@@ -100,12 +102,17 @@ export default {
   @apply text-center text-white mb-8 font-extrabold text-4xl;
 }
 
+.table-wrapper {
+  overflow-x: auto; /* استخدام CSS التقليدي بدلاً من @apply */
+}
+
 .product-table {
   @apply w-full text-left bg-gray-900;
   border-collapse: collapse;
 }
 
-.product-table th, .product-table td {
+.product-table th,
+.product-table td {
   @apply border-b border-gray-700 py-4 px-6;
 }
 
@@ -117,7 +124,8 @@ export default {
   @apply bg-gray-700;
 }
 
-.update-button, .delete-button {
+.update-button,
+.delete-button {
   @apply py-2 px-4 rounded-lg text-white transition duration-300;
 }
 

@@ -11,19 +11,19 @@
       <div class="form-row">
         <div class="form-group">
           <label for="price">Price:</label>
-          <input type="number" id="price" v-model="price" required min="0" step="0.01" placeholder="Enter price" class="input" />
+          <input type="number" id="price" v-model="price" required    placeholder="Enter price" class="input" />
         </div>
         <div class="form-group">
-          <label for="taxes">Taxes:</label>
-          <input type="number" id="taxes" v-model="taxes" required min="0" step="0.01" placeholder="Enter taxes" class="input" />
+          <label for="taxes">Taxes (%):</label>
+          <input type="number" id="taxes" v-model="taxes" required    placeholder="Enter taxes" class="input" />
         </div>
         <div class="form-group">
           <label for="ads">Ads:</label>
-          <input type="number" id="ads" v-model="ads" required min="0" step="0.01" placeholder="Enter ads cost" class="input" />
+          <input type="number" id="ads" v-model="ads" required    placeholder="Enter ads cost" class="input" />
         </div>
         <div class="form-group">
           <label for="discount">Discount:</label>
-          <input type="number" id="discount" v-model="discount" required min="0" step="0.01" placeholder="Enter discount" class="input" />
+          <input type="number" id="discount" v-model="discount" required    placeholder="Enter discount" class="input" />
         </div>
         <div class="form-group">
           <label>Total:</label>
@@ -53,10 +53,10 @@ export default {
   data() {
     return {
       name: "",
-      price: 0,
-      taxes: 0,
-      ads: 0,
-      discount: 0,
+      price: "",
+      taxes: "",
+      ads: "",
+      discount: "",
       quantity: 1,
       category: "",
       editMode: false,
@@ -64,10 +64,26 @@ export default {
     };
   },
   computed: {
-    total() {
-      return (this.price + this.taxes + this.ads - this.discount).toFixed(2);
-    },
+  total() {
+    if (!this.price || this.price <= 0) {
+      return 0; // لا يتم الحساب إذا لم يتم إدخال سعر
+    }
+    // الضريبة محسوبة كنسبة مئوية من السعر
+    const taxAmount = (this.price * this.taxes) / 100;
+
+    // الحساب الكلي
+    return (this.price + taxAmount + this.ads - this.discount).toFixed(2);
   },
+  calculatedTax() {
+    // حساب الضريبة بشكل مستقل
+    if (!this.price || this.price <= 0) {
+      return 0;
+    }
+    return ((this.price * this.taxes) / 100).toFixed(2); // القيمة المحسوبة للضريبة
+  },
+},
+
+
   watch: {
     editProductData: {
       handler(newValue) {
@@ -89,47 +105,46 @@ export default {
   methods: {
     ...mapActions(['addProduct', 'updateProduct']),
     submitHandler() {
-      if (this.editMode) {
-        // Update existing product
-        const updatedProduct = {
-          name: this.name,
-          price: this.price,
-          taxes: this.taxes,
-          ads: this.ads,
-          discount: this.discount,
-          total: this.total,
-          quantity: this.quantity,
-          category: this.category,
-        };
-        this.updateProduct({ index: this.productIndex, updatedProduct }).then(() => {
-          this.$store.dispatch('fetchProducts');
-        });
-        this.editMode = false;
-      } else {
-        // Add new product
-        for (let i = 0; i < this.quantity; i++) {
-          const newProduct = {
-            id: Date.now() + i,
-            name: this.name,
-            price: this.price,
-            taxes: this.taxes,
-            ads: this.ads,
-            discount: this.discount,
-            total: this.total,
-            quantity: 1,
-            category: this.category,
-          };
-          this.addProduct(newProduct);
-        }
-      }
-      this.resetForm();
-    },
+  if (this.editMode) {
+    const updatedProduct = {
+      name: this.name,
+      price: this.price,
+      taxes: this.calculatedTax, // الضريبة المحسوبة
+      ads: this.ads,
+      discount: this.discount,
+      total: this.total,
+      quantity: this.quantity,
+      category: this.category,
+    };
+    this.updateProduct({ index: this.productIndex, updatedProduct }).then(() => {
+      this.$store.dispatch('fetchProducts');
+    });
+    this.editMode = false;
+  } else {
+    for (let i = 0; i < this.quantity; i++) {
+      const newProduct = {
+        id: Date.now() + i,
+        name: this.name,
+        price: this.price,
+        taxes: this.calculatedTax, // الضريبة المحسوبة
+        ads: this.ads,
+        discount: this.discount,
+        total: this.total,
+        quantity: 1,
+        category: this.category,
+      };
+      this.addProduct(newProduct);
+    }
+  }
+  this.resetForm();
+},
+
     resetForm() {
       this.name = "";
-      this.price = 0;
-      this.taxes = 0;
-      this.ads = 0;
-      this.discount = 0;
+      this.price = "";
+      this.taxes = "";
+      this.ads = "";
+      this.discount = "";
       this.quantity = 1;
       this.category = "";
       this.editMode = false;
